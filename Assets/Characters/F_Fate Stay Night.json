@@ -1,0 +1,79 @@
+{
+  "name": "Fate Stay Night",
+  "type": "Anime",
+  "description": "Fate/Stay Night is a story about the Holy Grail War",
+  "url": "https://en.wikipedia.org/wiki/Fate/stay_night",
+  "img": "https://i.imgur.com/lQE3vC0.png",
+  "characters": [
+    {
+      "name": "Rin Tohsaka",
+      "img": [
+		"https://i.imgur.com/AD20gWj.png",
+		"https://i.imgur.com/JS91EYY.png",
+		"https://i.imgur.com/OeDuEpb.png"
+      ]
+    },
+    {
+      "name": "Artoria Pendragon (Alter)",
+      "img": [
+		"https://i.imgur.com/heL5k1H.png",
+		"https://i.imgur.com/qoYBaxe.png",
+		"https://i.imgur.com/Ka1paJo.png"
+      ]
+    },
+    {
+      "name": "Saber",
+      "img": [
+		"https://i.imgur.com/Fxl2OEI.png",
+		"https://i.imgur.com/p2dBSYD.png",
+		"https://i.imgur.com/jDiufgO.png"
+      ]
+    },
+    {
+      "name": "Illyasviel von Einzbern",
+      "img": [
+		"https://i.imgur.com/2dQa1ON.png",
+		"https://i.imgur.com/GZfIDeP.png",
+		"https://i.imgur.com/bnajQvK.png"
+      ]
+    },
+    {
+      "name": "Caster - Medea",
+      "img": [
+		"https://i.imgur.com/2c8y9uT.png",
+		"https://i.imgur.com/ONBCpCL.png",
+		"https://i.imgur.com/2c8y9uT.png"
+      ]
+    },
+    {
+      "name": "Rider - Medusa",
+      "img": [
+		"https://i.imgur.com/QFKuWW6.png",
+		"https://i.imgur.com/xQh1ThY.png",
+		"https://i.imgur.com/484HLha.png"
+      ]
+    },
+    {
+      "name": "Sakura Matou",
+      "img": [
+		"https://i.imgur.com/IIaqSzv.png",
+		"https://i.imgur.com/Etga8qD.png",
+		"https://i.imgur.com/qwk3Seb.png"
+      ]
+    },
+    {
+      "name": "Justeaze Lizrich von Einzbern",
+      "img": [
+		"https://i.imgur.com/RmqDWx2.png",
+		"https://i.imgur.com/kh8IzNU.png"
+      ]
+    },
+    {
+      "name": "Sella",
+      "img": [
+		"https://i.imgur.com/rHz65Xf.png",
+		"https://i.imgur.com/JIOa01U.png"
+      ]
+    }
+  ]
+}

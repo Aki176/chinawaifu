@@ -1,0 +1,32 @@
+{
+  "name": "Kokoro Connect",
+  "type": "Manga",
+  "description": "Kokoro Connect is a light novel series written by Sadanatsu Anda",
+  "url": "https://kokoroconnect.fandom.com/wiki/Kokoro_Connect_Wiki",
+  "img": "https://i.imgur.com/xNn23Xk.png",
+  "characters": [
+    {
+      "name": "Himeko Inaba",
+      "img": [
+		"https://i.imgur.com/oC7TC7I.png",
+		"https://i.imgur.com/Z8bD8os.png",
+		"https://i.imgur.com/DVsG19n.png"
+      ]
+    },
+    {
+      "name": "Iori Nagase",
+      "img": [
+		"https://i.imgur.com/KWJNNUU.png",
+		"https://i.imgur.com/lhFrG3Z.png",
+		"https://i.imgur.com/bVGiTJe.png"
+      ]
+    },
+    {
+      "name": "Yui Kiriyama",
+      "img": [
+		"https://i.imgur.com/vgGQb3I.png",
+		"https://i.imgur.com/MDGwVJN.png"
+      ]
+    }
+  ]
+}

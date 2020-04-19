@@ -1,96 +1,91 @@
-let sqlite3 = require('sqlite3').verbose();
-
-// For testing purposes
-exports.saveWaifu = (waifuList) => {
-    let db = new sqlite3.Database('./waifu.db', (err) => {
+module.exports = bot => {
+  out = {};
+  out.getWaifu = waifuName => {
+    bot.db.query(
+      'SELECT * FROM waifu WHERE "name"=$1;',
+      [waifuName],
+      (err, res) => {
         if (err) {
-            console.log('help');
-            return console.log(err.message);
+          throw err;
         }
-    });
-
-    db.serialize(() => {
-        let waifus = waifuList.map((waifu) => `('${waifu.name}', '${JSON.stringify(waifu.img)}', '${waifu.series}')`).join(',');
-
-        try {
-            db.run('CREATE TABLE IF NOT EXISTS waifu(name text PRIMARY KEY, img text, series text)');
-            db.run('INSERT OR IGNORE INTO waifu(name, img, series) VALUES ' + waifus);
-        } catch (err) {
-            console.log(err.message);
-        }
-
-
-        db.close();
-    })
-};
-
-exports.getWaifu = (waifuName) => {
-    let db = new sqlite3.Database('./waifu.db', (err) => {
-        if (err) {
-            return console.log(err.message);
-        }
-    });
-
-    let waifu = undefined;
-
-    console.log('lets go nibbers');
-    db.each(`SELECT *
-	FROM waifu
-	WHERE name = ?`, [waifuName], (err, row) => {
-        if (err) {
-            return console.log(err.message);
-        }
-        console.log(`${JSON.parse(row.img)[0]}`);
-        waifu = {
-            name: row.name,
-            img: JSON.parse(row.img),
-            series: row.series
+        let row = res.rows[0];
+        return {
+          name: row.name,
+          img: JSON.parse(row.img),
+          series: row.series
         };
-    });
+      }
+    );
+  };
 
-    db.close();
+  out.listWaifus = async user => {
+    let res = await bot.db.query(
+      'SELECT * FROM claimedList l JOIN waifu w ON (l."waifu"=w."name") WHERE "userid"=$1;',
+      [user.id]
+    );
+    return res.rows;
+  };
 
-    return waifu;
-};
-
-exports.claimWaifu = async (user, waifu) => {
-    let db = new sqlite3.Database('./waifu.db', err => {
-
-        if (err) {
-            console.log('encountered error: ')
-            console.log(err.message)
+  out.changeMoney = async (user, amount) => {
+    // There is a serious design flaw here that will make money be negative, I cannot fix that
+    // in this time period
+    bot.db.connect((err, client, release) => {
+      if (err) throw err;
+      client.query(
+        'SELECT * FROM profile WHERE "userid"=$1;',
+        [user.id],
+        (err, res) => {
+          if (err) throw err;
+          if (!res.rows[0])
+            client.query('INSERT INTO profile ("userid") VALUES ($1);', [
+              user.id
+            ]);
+          client.query(
+            'UPDATE profile SET "money"="money"+$1 WHERE "user"=$2;',
+            [amount, user.id]
+          );
         }
+      );
     });
-    let claimDAO = {
-        key: `${user.serverid.toString()}_${user.id.toString()}_${waifu.series.toLowerCase()}_${waifu.name.toLowerCase()}`,
-        serverid: user.serverid.toString(),
-        userid: user.id.toString(),
-        waifucode: `${waifu.series.toLowerCase()}_${waifu.name.toLowerCase()}`
-    };
+  };
 
-    db.serialize(async () => {
-        db.run(`CREATE TABLE IF NOT EXISTS claimedList(ukey text NOT NULL PRIMARY KEY, serverid text, userid text, waifuCode varchar(64),claimedAmount smallint)`);
-        // Check if value exists
-        db.get(`SELECT * FROM claimedList WHERE ukey='${claimDAO.key.replace("'","\"")}'`, (err, row) => {
-            if (err) {
-                console.log(err);
-                return;
-            }
+  out.claimWaifu = (user, waifu) => {
+    bot.db.connect((err, client, release) => {
+      if (err) throw err;
+      client.query(
+        'SELECT * FROM claimedList WHERE "waifu"=$1 AND "userid"=$2;',
+        [waifu.name, user.id],
+        (err, res) => {
+          if (err) {
+            throw err;
+          }
 
-            if (row === undefined) {
-                console.log('inserting new entry for: ');
-                console.log(claimDAO);
-                db.run(`INSERT into claimedList(ukey,serverid , userid , waifuCode, claimedAmount) 
-                VALUES('${claimDAO.key.replace("'","\"")}','${claimDAO.serverid}','${claimDAO.userid}','${claimDAO.waifucode.replace("'","\"")}','1')`)
-                console.log(`INSERT into claimedList(ukey,serverid , userid , waifuCode, claimedAmount) 
-                VALUES('${claimDAO.key.replace("'","\"")}','${claimDAO.serverid}','${claimDAO.userid}','${claimDAO.waifucode.replace("'","\"")}','1')`);
-            } else {
-                // Entry exists, increase claimed count
-                console.log(row);
-                console.log('row exists, increase claimedAmount by one');
-                db.run(`UPDATE claimedList SET claimedAmount = ${row.claimedAmount + 1}
-                WHERE ukey='${claimDAO.key}'`);
-            }
-        })
+          if (res.rows[0] === undefined) {
+            client.query(
+              'SELECT * FROM profile WHERE "userid"=$1;',
+              [user.id],
+              (err, res) => {
+                if (err) throw err;
+                if (!res.rows[0]) {
+                  client.query('INSERT INTO profile ("userid") VALUES ($1);', [
+                    user.id
+                  ]);
+                }
+                client.query(
+                  'INSERT into claimedList("userid", "waifu") VALUES ($1, $2);',
+                  [user.id, waifu.name]
+                );
+              }
+            );
+          } else {
+            client.query(
+              'UPDATE claimedList SET "claimedamount"="claimedamount"+1 WHERE "waifu"=$1 AND "userid"=$2 AND "serverid"=$3;',
+              [waifu.name, user.id, user.serverid]
+            );
+          }
+        }
+      );
     });
+  };
+  return out;
 };

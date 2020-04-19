@@ -1,0 +1,8 @@
+{
+  "botToken": "NTE4MTkwNTg5NTQ0NDk3MTYz.XcXp3w.xsDrBqT2qxn9KJWyzxEM_jmrTLY",
+  "dbUser": "myUser",
+  "dbPassword": "myPass",
+  "dbHost": "localhost",
+  "dbPort": 5432,
+  "dbName": "chinawaifu"
+}
